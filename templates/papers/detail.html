@@ -1,0 +1,624 @@
+{% extends "base.html" %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static "css/jquery.raty.css" %}">
+<style>
+#lightbox {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: 500px;
+	margin-left: -250px;
+	background: #fff;
+	z-index: 1001;
+	display: none;
+}
+#lightbox-shadow {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: #000;
+	filter: alpha(opacity=75);
+	-moz-opacity: 0.75;
+	-khtml-opacity: 0.75;
+	opacity: 0.75;
+	z-index: 1000;
+	display: none;
+}
+.vote {
+	position: relative;
+}
+
+.form-el {
+	text-align: center;
+}
+text {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+form {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.toolbox {
+	padding-left: 0px;
+}
+
+.toolbox li {
+	list-style: none;
+
+	text-align: center;
+}
+
+.toolbox li:hover {
+	border-radius: 5px;
+	background-color: #428BCA;
+	padding-left: 3px;
+	padding-right: 3px;
+	color: white;
+}
+
+.toolbox li a:hover {
+	color: white;
+}
+
+#textarea { resize:vertical; }
+#record {
+	border: 1px solid #ddd;
+	border-radius: 6px;
+}
+
+#record {
+	text-align: left;
+}
+
+#paperTitle {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+#paperTitle span {
+	color: #333;
+	font-size: 27px;
+	font-weight: normal;
+	line-height: 27px;
+	font-family: Helvetica Neue,Arial,Helvetica,sans-serif;
+}
+
+#paperSession {
+	padding-bottom: 15px;
+}
+
+#paperSession span {
+	font-size: 15px;
+	font-weight: normal;
+}
+
+#paperInfo {
+	padding-bottom: 15px;
+}
+
+#paperInfo {
+	font-size: 11px;
+	color: #666;
+	font-family: Verdana,Arial,sans-serif;
+}
+
+#paperMain {
+	border-bottom: 1px solid #ddd;
+}
+
+.block:before {
+	  content: '';
+	  display: inline-block;
+	  height: 100%;
+	  vertical-align: middle;
+	  margin-right: -0.25em; /* Adjusts for spacing */
+}
+.star-box-giga-star {
+	background-image: url({% static "images/sprites.png" %});
+	background-position: -180px -71px;
+	width: 66px;
+	height: 66px;
+	line-height: 66px;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+	font-size: 13px;
+	font-weight: bold;
+	color: black;
+	font-family: tahoma;
+	float: left;
+}
+
+#paperOverallScore {
+}
+
+#paperAbstract {
+	border-top: 1px solid #ddd;
+	margin: .5em 0 .75em;
+	line-height: 140%;
+	padding: 0;
+	text-align: justify;
+	border-bottom: 1px solid #ddd;
+}
+
+#paperAbstract p {
+	margin-top: 10px;
+}
+
+#paper ul {
+	padding-left: 0px;
+}
+#paper ul li {
+	list-style: none;
+    padding-right: 5px;
+    padding-left: 0px;
+}
+
+.paperAuthorsAuthor {
+	color: #666;
+	font-size: 13px;
+	margin: .35em 0 .25em;
+	font-family: Verdana,Arial,sans-serif;
+	font-weight: bold;
+	padding-right: 5px;
+}
+
+#cont {
+	position: relative;
+	float: right;
+	margin-top: 10px;
+	margin-right: -37px;
+	border: 1px solid #ddd;
+	background-color: white;
+	border-radius: 5px;
+}
+#cont ul {
+	margin-bottom: 0px;
+}
+#cont ul li {
+	padding-right: 0px;
+	text-align: center;
+}
+
+.toolbox {
+	padding: 5px;
+	text-align: center;
+}
+
+.middle {
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+}
+
+.toolbox:hover {
+	background-color: #b0b0b0;
+}
+
+.vote {
+	padding-top: 10px;
+}
+
+#messagesMain {
+	border-bottom: 1px solid #ddd;
+}
+
+#messagesTitle {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+#messagesTitle span {
+	color: #333;
+	font-size: 27px;
+	font-weight: normal;
+	line-height: 27px;
+	font-family: Helvetica Neue,Arial,Helvetica,sans-serif;
+}
+
+
+#messages ul {
+	padding-left: 0px;
+}
+#messages ul li {
+	list-style: none;
+    padding-right: 5px;
+    padding-left: 0px;
+}
+
+.bubble {
+  position: relative;
+  background-color:#eee;
+  margin: 0;
+  padding:10px;
+  text-align:center;
+  width:auto;
+  -moz-border-radius:10px;
+  -webkit-border-radius:10px;
+  -webkit-box-shadow: 0px 0 3px rgba(0,0,0,0.25);
+  -moz-box-shadow: 0px 0 3px rgba(0,0,0,0.25);
+  box-shadow: 0px 0 3px rgba(0,0,0,0.25); 
+}
+.bubble:after {
+  position: absolute;
+  display: block;
+  content: "";  
+  border-color: transparent #eee transparent transparent;
+  border-style: solid;
+  border-width: 10px;
+  height:0;
+  width:0;
+  position:absolute;
+  top: 10px;
+  left:-19px;
+}
+
+.bubble-right {
+  position: relative;
+  background-color:#eee;
+  margin: 0;
+  padding:10px;
+  text-align:center;
+  width:auto;
+  -moz-border-radius:10px;
+  -webkit-border-radius:10px;
+  -webkit-box-shadow: 0px 0 3px rgba(0,0,0,0.25);
+  -moz-box-shadow: 0px 0 3px rgba(0,0,0,0.25);
+  box-shadow: 0px 0 3px rgba(0,0,0,0.25); 
+}
+.bubble-right:after {
+  position: absolute;
+  display: block;
+  content: "";  
+  border-color: transparent transparent transparent #eee;
+  border-style: solid;
+  border-width: 10px;
+  height:0;
+  width:0;
+  position:absolute;
+  top: 10px;
+  right:-19px;
+}
+
+</style>
+{% endblock %}
+{% block content %}
+<audio id="hello" src="{{ STATIC_URL }}sounds/helloooo.wav" preload="auto"></audio>
+<!-- <audio id="groovy" src="{{ STATIC_URL }}sounds/groovy.wav" preload="auto"></audio> -->
+<audio id="skata" src="{{ STATIC_URL }}sounds/scata.wav" preload="auto"></audio>
+<audio id="threepointfive" src="{{ STATIC_URL }}sounds/threepointfive.wav" preload="auto"></audio>
+
+<div class="container">
+    <div class="row starter-template" id="paper">
+		<div class="col-md-7" id="record">
+			<div class="col-md-12">
+				<div id="paperMain">
+					<div id="cont">
+						<div class="toolbox" id="download-paper"><a href="{% url "download_pdf" paper.id %}" target="_blank"><i class="fa fa-file-pdf-o fa-2x"></i></a></div>
+						<div class="toolbox middle"><a href="{% url "blog_post_create" pk=paper.pk %}"><i class="fa fa-pencil fa-2x"></i></a></div>
+						<div class="toolbox"><a href="#mymod" data-toggle="modal"><i class="fa fa-quote-left fa-2x"></i></a></div>
+					</div>
+					<div id="paperTitle">
+				        <span>{{ paper.title }}</span>
+					</div>
+					<div id="paperSession">
+						{% if sessions %}<span>({% for s in sessions %}{{ s.day|date:"D, d M. Y" }}, {{ s.location.name }}{% endfor %})</span>{% endif %}
+					</div>
+					<div id="paperInfo">
+						<span class="journal-title">{{ paper.journal.title }}</span>{% if paper.volume %}, {{ paper.volume }}{% endif %}{% if paper.number %} ({{ paper.number }}){% endif %}{% if paper.pages %}, {{ paper.pages }}{% endif %}{% if paper.year %}, {{ paper.year }}{% endif %}
+					</div>
+				</div>
+				<div id="paperOverallScore" class="row">
+					<div id="paperStar" class="col-md-2">
+							<div class="star-box-giga-star"></div>
+					</div>
+					<div id="paperDescriptives" class="col-md-10">
+						<table class="table table-striped table-condensed">
+						    <thead>
+						        <tr>
+									<th></th>
+						            <th>Before</th>
+						            <th>After</th>
+						        </tr>
+						    </thead>
+						    <tbody>
+						        <tr>
+						            <td>Mean</td>
+						            <td id="beforeMean"></td>
+						            <td id="afterMean"></td>
+						        </tr>
+						        <tr>
+						            <td>Median</td>
+						            <td id="beforeMedian"></td>
+						            <td id="afterMedian"></td>
+						        </tr>
+						        <tr>
+						            <td>Mode</td>
+						            <td id="beforeMode"></td>
+						            <td id="afterMode"></td>
+						        </tr>
+						        <tr>
+						            <td>SD</td>
+						            <td id="beforeSD"></td>
+						            <td id="afterSD"></td>
+						        </tr>
+						    </tbody>
+						</table>
+					</div>
+				</div>
+				{% if paper.abstract %}
+				<div id="paperAbstract">
+					<p>
+						{{ paper.abstract }}
+					</p>
+				</div>				
+				{% endif %}
+				
+				<div id="paperAuthors">
+			        <ul>
+			            {% for author in authors %}
+			                <li>
+			                    {% if author.email %}
+									<span class="paperAuthorsAuthor">Author #{{ forloop.counter }}:</span>
+			                        <a href="mailto:{{ author.email }}">
+			                            {{ author }}
+			                        </a>
+			                    {% else %}
+			                        <span class="paperAuthorsAuthor">Author #{{ forloop.counter }}:</span><a href="#" id="pop" data-html="true" data-toggle="popover" data-content="{% for a in author.affiliation.all %}{{ a.department }}, <b>{{ a.university }}</b><br />{% endfor %}">{{ author }}</a>
+			                    {% endif %}
+			                </li>
+			            {% endfor %}
+			        </ul>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-5">
+			<div id="chart"></div>
+			{% if paper.open_for_voting %}
+			<div id="votingForm">
+				<div id="votingInfo"></div>
+				<form class="form-horizontal vote">
+					<fieldset>
+						<legend>New Vote</legend>
+						<div class="form-group">
+							<label class="col-md-4 control-label" for="selectbasic">Participant</label>  
+							<div class="col-md-6">
+							    <select id="selectbasic" name="selectbasic" class="form-control">
+								{% for p in participants %}
+							      <option value="{{ p.pk }}">{{ p }}</option>
+							  	{% endfor %}
+							    </select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-4 control-label" for="selectbasic">Score</label>  
+							<div id="scoreSlider" class="col-md-6"></div>
+						</div>
+						<div class="form-group vote">
+							<div class="btn-group">
+							  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+							    Vote <span class="caret"></span>
+							  </button>
+							  <ul class="dropdown-menu" role="menu">
+							    <li><a href="#" title="click to vote for before" onclick="sendForm(0);return false;">Before</a></li>
+							    <li><a href="#" title="click to vote for after" onclick="sendForm(1);return false;">After</a></li>
+							  </ul>
+							</div>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+			{% else %}
+			<div id="votingForm">
+				<div id="votingInfo"></div>
+				<form class="form-horizontal vote">
+					<fieldset>
+						<legend>The voting has been closed for this paper</legend>
+					</fieldset>
+				</form>
+			</div>
+			{% endif %}
+		</div>
+	</div>
+	{% if msg %}
+    <div class="row">
+		<div class="col-md-12">
+			<div id="messagesMain">
+				<div id="messagesTitle">
+			        <span>message board</span>
+				</div>
+			</div>
+			<div id="messages">
+				{% for m in msg %}
+				{% if forloop.counter0|divisibleby:2 %}
+				<div class="message">
+				  <div class="row" style="margin-top: 10px">
+				    <div class="col-md-1">
+				      <div class="author"><span class="paperAuthorsAuthor">{{ m.user }}</span></div>
+				    </div>
+				    <div class="col-md-5">
+				      <div class="bubble">
+					{{ m.message }}
+					{% if user == m.user %}
+					<h5 class="pull-right"><a class="delete-comment" href="#"><i class="fa fa-times"></i></a></h5>
+					{% endif %}
+				      </div>
+				    </div>
+				  </div>
+				</div>
+				{% else %}
+				<div class="row" style="margin-top: 10px">
+				  <div class="col-md-6"></div>
+				  <div class="message">
+				    <div class="col-md-5">
+				      <div class="bubble-right">
+					{{ m.message }}
+				      </div>
+				    </div>
+				  </div>
+				  <div class="col-md-1">
+				    <div class="author"><span class="paperAuthorsAuthor">{{ m.user }}</span></div>
+				  </div>
+				</div>
+				{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+    </div>
+    {% endif %}	
+</div>
+
+
+
+<div class="modal fade" id="mymod" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+	  
+    <div class="modal-content">
+		<div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	        <h4 class="modal-title" id="exampleModalLabel">new message from {{ user }}</h4>
+		</div>
+
+        <div class="modal-body">
+			<textarea class="form-control" id="textarea" name="textarea">write your message here!</textarea>
+		</div>
+        <div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			<input class="btn btn-success" type="submit" value="Send!" id="submit">
+        </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+
+<script src="{% static "js/d3.v3.min.js" %}"></script>
+<script src="{% static "js/lightbox.js" %}"></script>
+<script src="{% static "js/c3.min.js" %}"></script>
+<script src="{% static "js/jquery-ui-slider-pips.js" %}"></script>
+<script src="{% static "js/llc.js" %}"></script>
+
+<script>
+
+function getRatingData() {
+	return JSON.parse($.ajax({
+		type: 'GET',
+		url: "{% url "get_data" %}",
+		dataType: 'json',
+		data: {
+			'paper': '{{ paper.pk }}'
+			},
+		global: false,
+		async:false,
+		success: function(data) {
+			return data;
+		}
+	}).responseText);
+}
+
+var sendForm = function(time) {
+	var getParticipant = function() {
+		return $("#selectbasic").val();
+	}
+	var getScore = function() {
+		return $("#scoreSlider .ui-slider-tip").html()
+		// return $('#starVote').raty('score');
+	}
+	var participant = getParticipant();
+	var score = getScore();
+	
+	$.ajax({
+			type: 'POST',
+			url: "{% url "add_rating" %}",
+			dataType: 'json',
+			data: {
+				'paperid': '{{ paper.pk }}',
+				'participant': participant,
+				'score': score,
+				'before': time,
+				'csrfmiddlewaretoken': '{{ csrf_token }}',
+				},
+			global: false,
+			async:false,
+			success: function(data) {
+        if (getScore() < 3.5 ) {
+          document.getElementById('skata').play();
+        } else if (getScore() == 3.5) {
+          document.getElementById('threepointfive').play();
+        } else if (getScore() == 5.0) {
+          lightbox("<div><img src='{{ STATIC_URL }}images/me.jpg' /></div>");
+        } else {
+          document.getElementById('hello').play();
+					// document.getElementById('groovy').play();
+        }
+				getScores();
+				makeChart();
+				$("#votingInfo").addClass("alert alert-success alert-dismissable");
+				$("#votingInfo").append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true"> &times;</button><p></p>');
+				$("#votingInfo > p").html("The vote has been cast");
+				$("#votingInfo").show();
+			}
+		});
+}
+
+
+$(function() {
+	$('#scoreSlider').slider({ max: 10 }).slider('pips', { rest: "label", labels: ['0', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '4.5', '5'] }).slider('float', { handle: true, pips: true, labels: ['0', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '4.5', '5'] });
+	// $("#download-paper").click(function() {
+	// 	// alert("gg");
+	// 	$.ajax({
+	// 		type: "GET",
+	// 		url: "{% url "download_pdf" paper.id %}",
+	// 		data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
+	//       success: function(msg){
+	// $("#infoArea").html('Your message has been sent.')
+	//           $(".modal").modal('hide'); //hide popup
+	//       },
+	//       error: function(){
+	//           alert("failure");
+	//       }
+	// 	});
+	// });
+	
+	
+	
+	
+    $("input#submit").click(function(){
+		data = $('#textarea').val();
+        $.ajax({
+            type: "POST",
+            url: "{% url "send_message" pk=paper.pk %}",
+			dataType: 'json',
+            data: {
+				'csrfmiddlewaretoken': '{{ csrf_token }}',
+				'data': data
+            },
+            success: function(msg){
+				$("#infoArea").html('Your message has been sent.')
+                $(".modal").modal('hide'); //hide popup
+            },
+            error: function(){
+                alert("failure");
+            }
+        });
+    });
+	
+	getScores();
+	makeChart();
+	$("#votingInfo").hide()
+});
+</script>
+{% endblock %}

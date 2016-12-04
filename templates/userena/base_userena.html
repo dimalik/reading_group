@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load url from future %}
+
+{% block styles %}
+<style type="text/css" media="screen">
+#actions {
+	border: 1px solid #bbb;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+}
+#actions ul {
+	list-style: none;
+	padding-left: 0px;
+}
+
+#actionsTitle {
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 5px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+#actionsTitle span {
+	color: #333;
+	font-size: 27px;
+	font-weight: normal;
+	line-height: 27px;
+	font-family: Helvetica Neue,Arial,Helvetica,sans-serif;
+}
+</style>
+{% endblock %}
+
+{% block title %}{% blocktrans with profile.user.username as username %}{{ username }}'s profile.{% endblocktrans %}{% endblock %}
+{% block content_title %}<h2>{{ profile.user.username }} {% if profile.user.get_full_name %}({{ profile.user.get_full_name }}){% endif %}</h2>{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="row starter-template">
+		<div class="col-md-8">
+			{% block userena_content %}
+			{% endblock %}
+		</div>
+		{% if user.is_authenticated %}
+		<div class="col-md-4">
+			<div id="actions">
+				<div id="actionsTitle">
+					<span>account actions</span>
+				</div>
+			    {% if user.username == profile.user.username %}
+			      <ul>
+			          <li><a href="{% url 'userena_profile_detail' user.username %}">view profile</a></li>
+			          <li><a href="{% url 'userena_profile_edit' user.username %}">edit details</a></li>
+			          <li><a href="{% url 'userena_password_change' user.username %}">change password</a></li>
+			          <li><a href="{% url 'userena_email_change' user.username %}">change email</a></li>
+			      </ul>
+			    {% endif %}
+			</div>
+		</div>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

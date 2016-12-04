@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+<html>
+
+{% block content %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h1>QRT Reader parser</h1>
+				<hr>
+				Working with: {{ filename }}
+				Found: {{ num_participants }} participants
+				Found: {{ questions|length }} questions
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<h4>2) Question selection</h4>
+				<hr>
+				<div class="input-group"> <span class="input-group-addon">Filter</span>
+
+				    <input id="filter" type="text" class="form-control" placeholder="Type here...">
+				</div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Qualtrics/QRT</th>
+							<th>Loop/Merge</th>
+							<th>Name</th>
+						</tr>
+					</thead>
+					<tbody class="searchable">
+						{% for q in questions %}
+						<tr>
+							<td>{{ q }}</td>
+							<td><input type="checkbox" id="blankCheckbox" value="option1" aria-label="..."></td>
+							<td><input type="checkbox" id="blankCheckbox" value="option1" aria-label="..."></td>
+							<td><input type="text" class="form-control" placeholder=""></td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<h4>3) QRT Specification</h4>
+				<hr>
+				<div class="checkbox">
+				  <label>
+				    <input type="checkbox" id="blankCheckbox" value="option1" aria-label="...">RT
+				  </label>
+				</div>
+				<div class="checkbox">
+				  <label>
+				    <input type="checkbox" id="blankCheckbox" value="option1" aria-label="...">Accuracy
+				  </label>
+				</div>
+				<div class="checkbox">
+				  <label>
+				    <input type="checkbox" id="blankCheckbox" value="option1" aria-label="...">Noun
+				  </label>
+				</div>
+				<div class="checkbox">
+				  <label>
+				    <input type="checkbox" id="blankCheckbox" value="option1" aria-label="...">Determiner
+				  </label>
+				</div>
+				<div class="checkbox">
+				  <label>
+				    <input type="checkbox" id="blankCheckbox" value="option1" aria-label="...">Button_pressed
+				  </label>
+				</div>
+			</div>
+			<button class="btn btn-default pull-right" type="submit">Make my results!</button>
+		</div>
+	</div>
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+	$(document).ready(function () {
+
+	    (function ($) {
+
+	        $('#filter').keyup(function () {
+
+	            var rex = new RegExp($(this).val(), 'i');
+	            $('.searchable tr').hide();
+	            $('.searchable tr').filter(function () {
+	                return rex.test($(this).text());
+	            }).show();
+
+	        })
+
+	    }(jQuery));
+
+	});
+</script>
+{% endblock %}
+</html>

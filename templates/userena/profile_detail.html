@@ -1,0 +1,38 @@
+{% extends 'userena/base_userena.html' %}
+
+{% block userena_content %}
+<div class="col-md-8">
+	<div id="paperTitle">
+        Hello <span>{{ user.username }}</span>
+	</div>
+      <div id="details">
+          <img class="mugshot" src="{{ profile.get_mugshot_url }}"  />
+          <dl>
+              {% if profile.user.get_full_name %}
+                <dt>name</dt>
+                <dd>{{ profile.user.get_full_name }}</dd>
+              {% endif %}
+              {% if profile.user.email and not hide_email %}
+                <dt>email</dt>
+                <dd>{{ profile.user.email }}</dd>
+              {% endif %}
+              {% if profile.age %}
+                <dt>age</dt>
+                <dd>{{ profile.age }}</dd>
+              {% endif %}
+              {% if profile.website %}
+                <dt>website</dt>
+                <dd>{{ profile.website|urlize }}</dd>
+              {% endif %}
+              {% if profile.location %}
+                <dt>location</dt>
+                <dd>{{ profile.location }}</dd>
+              {% endif %}
+              {% if profile.about_me %}
+                <dt>about me</dt>
+                <dd>{{ profile.about_me }}</dd>
+              {% endif %}
+          </dl>
+  </div>
+</div>
+{% endblock %}

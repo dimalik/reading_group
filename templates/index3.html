@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>test</title>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+    
+    <script>
+    
+    $(function() {
+        $( "input[type=submit], a, button" )
+          .button()
+          .click(function( event ) {
+            event.preventDefault();
+          });
+      });
+    var myx = [3, 3, 3, 3.5, 3.5, 3.5, 3.5, 4, 3.5];
+    var myy = [2.5, 2.5, 3, 3, 3, 3, 3.5, 3.5, 3.5];
+    $(document).ready(function() {
+        $(".btn").click(function() {
+            if (myy.length == myx.length) {
+                $.ajax({
+                    url: '{% url "get_image" %}',
+                    type: 'GET',
+                    data: {
+                        myx: myx,
+                        myy: myy
+                    },
+                    success: function(data) {
+                        $("#outer").html('<img src="data:image/png;base64,' + data + '" width="640" height="480"/>')
+                    },
+                    failure: function(data) {
+                        alert("got an error");
+                    }
+                });
+            } else {
+                alert("arrays are not equal");
+            }
+        });
+    });
+    </script>
+</head>
+<body>
+<div id="outer"> </div>
+<button class="btn">make image</button>
+<ul>
+
+{% for number in skata %}
+    <li>{{ number }}</li>
+{% endfor %}
+</ul>
+</body>
+</html>
